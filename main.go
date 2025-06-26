@@ -1,6 +1,11 @@
 package main
 
-import "net/http"
+import (
+	"encoding/json"
+	"fmt"
+	"net/http"
+	"time"
+)
 
 // Go possui tipagem forte, minha string vai ser sempre string
 // essa estrutura abaixo tem o nome de 'struc', é uma estrutura de dados que vc consegue colocar varios tipos dentro dela
@@ -14,7 +19,7 @@ type Product struct {
 }
 
 // Esse debaixo é um slice que é um "array dinamico", Go tambem possui array's, porém eles sao fixos, slices sao dinamicos
-var Products = []Product{
+var products = []Product{
 	{
 		ID:          1,
 		Name:        "Smartphone Galaxy S23",
@@ -52,7 +57,21 @@ var Products = []Product{
 	},
 }
 
+func getProducts(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(products)
+}
+
+func contador(count int) {
+	for i := 0; i <= count; i++ {
+		fmt.Println(i)
+		time.Sleep(time.Second)
+	}
+}
+
 func main() {
-	// println("oie")
-	http.ListenAndServe(":8080", nil)
+	// http.HandleFunc("/products", getProducts)
+	// http.ListenAndServe(":8080", nil)
+	go contador(10) // cria uma goroutine => igual thread
+	contador(10)
 }
